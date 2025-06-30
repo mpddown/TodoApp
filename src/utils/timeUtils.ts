@@ -2,7 +2,7 @@ const MS_IN_MINUTE = 60 * 1000;
 const MS_IN_HOUR = 60 * MS_IN_MINUTE;
 const MS_IN_DAY = 24 * MS_IN_HOUR;
 
-const getLocale = () => navigator.language || "en-US";
+const getLocale = () => navigator.language || "he-IL";
 
 export const isSameDay = (date1: Date, date2: Date): boolean =>
   date1.getFullYear() === date2.getFullYear() &&
@@ -69,12 +69,12 @@ export const formatDate = (input: Date): string => {
 /**
  * Calculates the difference between a given date and the current date.
  * @param {Date} date - The target date to calculate the difference from.
- * @param {string} [lang=navigator.language || "en-US"] - The language code used for formatting.
+ * @param {string} [lang=navigator.language || "he-IL"] - The language code used for formatting.
  * @returns {string} A string representing the calculated difference in `Intl` format.
  */
 export const calculateDateDifference = (
   date: Date,
-  lang: string = navigator.language || "en-US",
+  lang: string = navigator.language || "he-IL",
 ): string => {
   const now = new Date();
   const target = new Date(date);
@@ -88,7 +88,7 @@ export const calculateDateDifference = (
 
   // for past dates
   if (dayDiff < 0) {
-    return `Not completed on time (${rtf.format(dayDiff, "day")})`;
+    return `לא הושלם בזמן (${rtf.format(dayDiff, "day")})`;
   }
 
   // same day

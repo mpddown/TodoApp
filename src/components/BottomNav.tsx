@@ -20,6 +20,7 @@ import { UserContext } from "../contexts/UserContext";
 import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
 import { pulseAnimation, slideInBottom } from "../styles";
 import { getFontColor } from "../utils";
+import { useTranslation } from "../hooks/useTranslation";
 
 /**
  * Component for rendering the bottom navigation bar.
@@ -28,6 +29,7 @@ export const BottomNav = (): JSX.Element | null => {
   const { user } = useContext(UserContext);
   const { tasks, settings } = user;
   const [value, setValue] = useState<number | undefined>();
+  const { t } = useTranslation();
 
   const theme = useTheme();
   const n = useNavigate();
@@ -84,7 +86,7 @@ export const BottomNav = (): JSX.Element | null => {
       >
         <NavigationButton
           onClick={() => n("/")}
-          label="Tasks"
+          label={t("navigation.tasks")}
           icon={
             <Badge
               color="primary"
@@ -97,7 +99,7 @@ export const BottomNav = (): JSX.Element | null => {
         />
         <NavigationButton
           onClick={() => n("/categories")}
-          label="Categories"
+          label={t("navigation.categories")}
           icon={<CategoryRounded sx={{ fontSize: smallIconSize }} />}
           disabled={!settings.enableCategories}
         />
@@ -105,7 +107,7 @@ export const BottomNav = (): JSX.Element | null => {
         <NavigationButton
           onClick={() => n("add")}
           showLabel={false}
-          aria-label="Add"
+          aria-label={t("home.tasks.addTask")}
           icon={
             <AddIconContainer
               clr={theme.palette.primary.main}
@@ -117,12 +119,12 @@ export const BottomNav = (): JSX.Element | null => {
         />
         <NavigationButton
           onClick={() => n("transfer")}
-          label="Transfer"
+          label={t("navigation.transfer")}
           icon={<GetAppRounded sx={{ fontSize: smallIconSize }} />}
         />
         <NavigationButton
           onClick={() => n("user")}
-          label="Profile"
+          label={t("navigation.profile")}
           icon={<PersonRounded sx={{ fontSize: smallIconSize }} />}
         />
       </StyledBottomNavigation>

@@ -25,6 +25,7 @@ import { calculateDateDifference, formatDate, getFontColor, systemInfo } from ".
 import { RenderTaskDescription } from "./RenderTaskDescription";
 import { CategoryBadge } from "..";
 import { UserContext } from "../../contexts/UserContext";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface TaskItemProps {
   task: Task;
@@ -59,6 +60,7 @@ export const TaskItem = memo(
   }: TaskItemProps) => {
     const { user } = useContext(UserContext);
     const { settings } = user;
+    const { t } = useTranslation();
 
     const {
       enableLinks = true,
@@ -118,13 +120,13 @@ export const TaskItem = memo(
         <TaskInfo translate="no">
           {task.pinned && (
             <Pinned translate="yes">
-              <PushPinRounded fontSize="small" /> &nbsp; Pinned
+              <PushPinRounded fontSize="small" /> &nbsp; {t("taskActions.pinned")}
             </Pinned>
           )}
           <TaskHeader>
             <TaskName done={task.done}>{textHighlighter(task.name)}</TaskName>
             <Tooltip
-              title={new Intl.DateTimeFormat(navigator.language, {
+              title={new Intl.DateTimeFormat("he-IL", {
                 dateStyle: "full",
                 timeStyle: "medium",
               }).format(new Date(task.date))}
@@ -143,7 +145,7 @@ export const TaskItem = memo(
 
           {task.deadline && (
             <Tooltip
-              title={new Intl.DateTimeFormat(navigator.language, {
+              title={new Intl.DateTimeFormat("he-IL", {
                 dateStyle: "full",
                 timeStyle: "medium",
               }).format(new Date(task.deadline))}
@@ -158,8 +160,8 @@ export const TaskItem = memo(
                   }}
                 />{" "}
                 &nbsp;
-                {new Date(task.deadline).toLocaleDateString()} {" • "}
-                {new Date(task.deadline).toLocaleTimeString()}
+                {new Date(task.deadline).toLocaleDateString("he-IL")} {" • "}
+                {new Date(task.deadline).toLocaleTimeString("he-IL")}
                 {!task.done && (
                   <>
                     {" • "}
@@ -172,7 +174,7 @@ export const TaskItem = memo(
 
           {task.sharedBy && (
             <SharedByContainer translate="yes">
-              <Link /> Shared by{" "}
+              <Link /> שותף על ידי{" "}
               <span translate={task.sharedBy === "User" ? "yes" : "no"}>{task.sharedBy}</span>
             </SharedByContainer>
           )}

@@ -30,7 +30,17 @@ export const GlobalStyles = () => {
           -webkit-text-size-adjust: 100%;
           --rsbs-backdrop-bg: rgba(0, 0, 0, 0.3);
           --rsbs-bg: ${theme.darkmode ? "#383838" : "#ffffff"};
+          direction: rtl;
         }
+        
+        html {
+          direction: rtl;
+        }
+        
+        body {
+          direction: rtl;
+        }
+        
         input[type="datetime-local"]:placeholder-shown {
           color: transparent !important;
         }

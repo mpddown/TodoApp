@@ -32,6 +32,7 @@ import { useTheme } from "@emotion/react";
 import { TaskContext } from "../../contexts/TaskContext";
 import { ColorPalette } from "../../theme/themeConfig";
 import { ShareDialog } from "./ShareDialog";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export const TaskMenu = () => {
   const { user, setUser } = useContext(UserContext);
@@ -51,6 +52,7 @@ export const TaskMenu = () => {
   const isMobile = useResponsiveDisplay();
   const n = useNavigate();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const selectedTask = useMemo(() => {
     return tasks.find((task) => task.id === selectedTaskId) || ({} as Task);
@@ -81,9 +83,9 @@ export const TaskMenu = () => {
       if (allTasksDone) {
         showToast(
           <div>
-            <b>All tasks done</b>
+            <b>כל המשימות הושלמו</b>
             <br />
-            <span>You've checked off all your todos. Well done!</span>
+            <span>סימנת את כל המשימות שלך כהושלמו. כל הכבוד!</span>
           </div>,
           {
             icon: (
@@ -152,13 +154,13 @@ export const TaskMenu = () => {
     }).format(new Date(selectedTask?.date || ""));
 
     const taskDeadline = selectedTask?.deadline
-      ? `. Task Deadline: ${calculateDateDifference(
+      ? `. תאריך יעד למשימה: ${calculateDateDifference(
           new Date(selectedTask.deadline),
           voice ? voice.lang : navigator.language,
         )}`
       : "";
 
-    const textToRead = `${taskName}${taskDescription}Date: ${taskDate}${taskDeadline}`;
+    const textToRead = `${taskName}${taskDescription}תאריך: ${taskDate}${taskDeadline}`;
 
     const utterThis: SpeechSynthesisUtterance = new SpeechSynthesisUtterance(textToRead);
 
@@ -193,10 +195,10 @@ export const TaskMenu = () => {
         return (
           <ReadAloudContainer>
             <ReadAloudHeader translate="yes">
-              <RecordVoiceOver /> Read aloud: <span translate="no">{selectedTask?.name}</span>
+              <RecordVoiceOver /> קריאה בקול: <span translate="no">{selectedTask?.name}</span>
             </ReadAloudHeader>
             <span translate="yes" style={{ marginTop: "8px", fontSize: "16px" }}>
-              Voice: <span translate="no">{utterThis.voice?.name || "Default"}</span>
+              קול: <span translate="no">{utterThis.voice?.name || "ברירת מחדל"}</span>
             </span>
             <div translate="no">
               <Marquee delay={0.6} play={isPlaying}>
@@ -257,21 +259,21 @@ export const TaskMenu = () => {
     <div>
       <StyledMenuItem onClick={handleMarkAsDone}>
         {selectedTask.done ? <Close /> : <Done />}
-        &nbsp; {selectedTask.done ? "Mark as not done" : "Mark as done"}
+        &nbsp; {selectedTask.done ? t("taskActions.markAsNotDone") : t("taskActions.markAsDone")}
       </StyledMenuItem>
       <StyledMenuItem onClick={handlePin}>
         <PushPinRounded sx={{ textDecoration: "line-through" }} />
-        &nbsp; {selectedTask.pinned ? "Unpin" : "Pin"}
+        &nbsp; {selectedTask.pinned ? t("taskActions.unpin") : t("taskActions.pin")}
       </StyledMenuItem>
 
       {multipleSelectedTasks.length === 0 && (
         <StyledMenuItem onClick={() => handleSelectTask(selectedTaskId || generateUUID())}>
-          <RadioButtonChecked /> &nbsp; Select
+          <RadioButtonChecked /> &nbsp; {t("taskActions.select")}
         </StyledMenuItem>
       )}
 
       <StyledMenuItem onClick={redirectToTaskDetails}>
-        <LaunchRounded /> &nbsp; Task details
+        <LaunchRounded /> &nbsp; {t("taskActions.taskDetails")}
       </StyledMenuItem>
 
       {settings.enableReadAloud && "speechSynthesis" in window && (
@@ -282,7 +284,7 @@ export const TaskMenu = () => {
             (window.speechSynthesis.speaking || window.speechSynthesis.pending)
           }
         >
-          <RecordVoiceOverRounded /> &nbsp; Read Aloud
+          <RecordVoiceOverRounded /> &nbsp; {t("taskActions.readAloud")}
         </StyledMenuItem>
       )}
 
@@ -292,7 +294,7 @@ export const TaskMenu = () => {
           handleCloseMoreMenu();
         }}
       >
-        <LinkRounded /> &nbsp; Share
+        <LinkRounded /> &nbsp; {t("taskActions.share")}
       </StyledMenuItem>
 
       <Divider />
@@ -302,10 +304,10 @@ export const TaskMenu = () => {
           handleCloseMoreMenu();
         }}
       >
-        <EditRounded /> &nbsp; Edit
+        <EditRounded /> &nbsp; {t("taskActions.edit")}
       </StyledMenuItem>
       <StyledMenuItem onClick={handleDuplicateTask}>
-        <ContentCopy /> &nbsp; Duplicate
+        <ContentCopy /> &nbsp; {t("taskActions.duplicate")}
       </StyledMenuItem>
       <Divider />
       <StyledMenuItem
@@ -315,7 +317,7 @@ export const TaskMenu = () => {
           handleCloseMoreMenu();
         }}
       >
-        <DeleteRounded /> &nbsp; Delete
+        <DeleteRounded /> &nbsp; {t("taskActions.delete")}
       </StyledMenuItem>
     </div>
   );

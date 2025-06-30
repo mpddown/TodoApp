@@ -22,6 +22,7 @@ import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
 import { useNavigate } from "react-router-dom";
 import { TaskProvider } from "../contexts/TaskProvider";
 import { AnimatedGreeting } from "../components/AnimatedGreeting";
+import { useTranslation } from "../hooks/useTranslation";
 
 const TasksList = lazy(() =>
   import("../components/tasks/TasksList").then((module) => ({ default: module.TasksList })),
@@ -30,6 +31,7 @@ const TasksList = lazy(() =>
 const Home = () => {
   const { user } = useContext(UserContext);
   const { tasks, emojisStyle, settings, name } = user;
+  const { t } = useTranslation();
 
   const isOnline = useOnlineStatus();
   const n = useNavigate();
@@ -63,32 +65,32 @@ const Home = () => {
   const timeGreeting = useMemo(() => {
     const currentHour = new Date().getHours();
     if (currentHour < 12 && currentHour >= 5) {
-      return "Good morning";
+      return t("home.greeting.goodMorning");
     } else if (currentHour < 18 && currentHour > 12) {
-      return "Good afternoon";
+      return t("home.greeting.goodAfternoon");
     } else {
-      return "Good evening";
+      return t("home.greeting.goodEvening");
     }
-  }, []);
+  }, [t]);
 
   // Memoize task completion text
   const taskCompletionText = useMemo(() => {
     const percentage = taskStats.completedTaskPercentage;
     switch (true) {
       case percentage === 0:
-        return "No tasks completed yet. Keep going!";
+        return t("home.tasks.noTasksCompleted");
       case percentage === 100:
-        return "Congratulations! All tasks completed!";
+        return t("home.tasks.allTasksCompleted");
       case percentage >= 75:
-        return "Almost there!";
+        return t("home.tasks.almostThere");
       case percentage >= 50:
-        return "You're halfway there! Keep it up!";
+        return t("home.tasks.halfwayThere");
       case percentage >= 25:
-        return "You're making good progress.";
+        return t("home.tasks.goodProgress");
       default:
-        return "You're just getting started.";
+        return t("home.tasks.justGettingStarted");
     }
-  }, [taskStats.completedTaskPercentage]);
+  }, [taskStats.completedTaskPercentage, t]);
 
   useEffect(() => {
     document.title = "Todo App";
@@ -109,7 +111,7 @@ const Home = () => {
 
       {!isOnline && (
         <Offline>
-          <WifiOff /> You're offline but you can use the app!
+          <WifiOff /> {t("home.offline")}
         </Offline>
       )}
       {tasks.length > 0 && (
@@ -139,8 +141,8 @@ const Home = () => {
             <TaskCountTextContainer>
               <TaskCountHeader>
                 {taskStats.completedTasksCount === 0
-                  ? `You have ${tasks.length} task${tasks.length > 1 ? "s" : ""} to complete.`
-                  : `You've completed ${taskStats.completedTasksCount} out of ${tasks.length} tasks.`}
+                  ? `${t("home.tasks.youHave")} ${tasks.length} ${tasks.length > 1 ? t("home.tasks.tasks") : t("home.tasks.task")} ${t("home.tasks.toComplete")}.`
+                  : `${t("home.tasks.youCompleted")} ${taskStats.completedTasksCount} ${t("home.tasks.outOf")} ${tasks.length} ${tasks.length > 1 ? t("home.tasks.tasks") : t("home.tasks.task")}.`}
               </TaskCountHeader>
               <TaskCompletionText>{taskCompletionText}</TaskCompletionText>
               {taskStats.tasksWithDeadlineTodayCount > 0 && (
@@ -151,9 +153,9 @@ const Home = () => {
                   }}
                 >
                   <TodayRounded sx={{ fontSize: "20px", verticalAlign: "middle" }} />
-                  &nbsp;Tasks due today:&nbsp;
+                  &nbsp;{t("home.tasks.tasksDueToday")}&nbsp;
                   <span translate="no">
-                    {new Intl.ListFormat("en", { style: "long" }).format(
+                    {new Intl.ListFormat("he", { style: "long" }).format(
                       taskStats.tasksDueTodayNames,
                     )}
                   </span>
@@ -175,12 +177,12 @@ const Home = () => {
         </TaskProvider>
       </Suspense>
       {!isMobile && (
-        <Tooltip title={tasks.length > 0 ? "Add New Task" : "Add Task"} placement="left">
+        <Tooltip title={tasks.length > 0 ? t("home.tasks.addNewTask") : t("home.tasks.addTask")} placement="left">
           <AddButton
             animate={tasks.length === 0}
             glow={settings.enableGlow}
             onClick={() => n("add")}
-            aria-label="Add Task"
+            aria-label={t("home.tasks.addTask")}
           >
             <AddRounded style={{ fontSize: "44px" }} />
           </AddButton>

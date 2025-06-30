@@ -42,6 +42,7 @@ import { TaskMenu } from "./TaskMenu";
 import { TaskIcon } from "../TaskIcon";
 import { useToasterStore } from "react-hot-toast";
 import { TaskSort } from "./TaskSort";
+import { useTranslation } from "../../hooks/useTranslation";
 
 const TaskMenuButton = memo(
   ({ task, onClick }: { task: Task; onClick: (event: React.MouseEvent<HTMLElement>) => void }) => (
@@ -101,10 +102,11 @@ export const TasksList: React.FC = () => {
   const isMobile = useResponsiveDisplay();
   const theme = useTheme();
   const { toasts } = useToasterStore();
+  const { t } = useTranslation();
 
   const listFormat = useMemo(
     () =>
-      new Intl.ListFormat("en-US", {
+      new Intl.ListFormat("he-IL", {
         style: "long",
         type: "conjunction",
       }),
@@ -212,7 +214,7 @@ export const TasksList: React.FC = () => {
     setDeleteDialogOpen(false);
     showToast(
       <div>
-        Deleted Task - <b translate="no">{taskToDelete?.name}</b>
+        נמחקה משימה - <b translate="no">{taskToDelete?.name}</b>
       </div>,
     );
     setTaskToDelete(null);
@@ -301,7 +303,7 @@ export const TasksList: React.FC = () => {
 
         showToast(
           <div translate="no" style={{ wordBreak: "break-word" }}>
-            <b translate="yes">Overdue task{overdueTasks.length > 1 && "s"}: </b>
+            <b translate="yes">משימה{overdueTasks.length > 1 && "ות"} באיחור: </b>
             {listFormat.format(taskNames)}
           </div>,
           {
@@ -337,7 +339,7 @@ export const TasksList: React.FC = () => {
             <SearchInput
               inputRef={searchRef}
               color="primary"
-              placeholder="Search for task..."
+              placeholder="חפש משימה..."
               autoComplete="off"
               value={search}
               onChange={(e) => {
@@ -420,8 +422,8 @@ export const TasksList: React.FC = () => {
           <SelectedTasksContainer>
             <div>
               <h3>
-                <RadioButtonChecked /> &nbsp; Selected {multipleSelectedTasks.length} task
-                {multipleSelectedTasks.length > 1 ? "s" : ""}
+                <RadioButtonChecked /> &nbsp; נבחרו {multipleSelectedTasks.length} משימ
+                {multipleSelectedTasks.length > 1 ? "ות" : "ה"}
               </h3>
               <span translate="no" style={{ fontSize: "14px", opacity: 0.8 }}>
                 {listFormat.format(
@@ -433,7 +435,7 @@ export const TasksList: React.FC = () => {
             </div>
             {/* TODO: add more features */}
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Tooltip title="Mark selected as done">
+              <Tooltip title="סמן נבחרות כהושלמו">
                 <IconButton
                   sx={{ color: getFontColor(theme.secondary) }}
                   size="large"
@@ -442,12 +444,12 @@ export const TasksList: React.FC = () => {
                   <DoneAll />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Delete selected">
+              <Tooltip title="מחק נבחרות">
                 <IconButton color="error" size="large" onClick={handleDeleteSelected}>
                   <Delete />
                 </IconButton>
               </Tooltip>
-              <Tooltip sx={{ color: getFontColor(theme.secondary) }} title="Cancel">
+              <Tooltip sx={{ color: getFontColor(theme.secondary) }} title="בטל">
                 <IconButton size="large" onClick={() => setMultipleSelectedTasks([])}>
                   <CancelRounded />
                 </IconButton>
@@ -465,8 +467,8 @@ export const TasksList: React.FC = () => {
             }}
           >
             <b>
-              Found {orderedTasks.length} task
-              {orderedTasks.length > 1 ? "s" : ""}
+              נמצאו {orderedTasks.length} משימ
+              {orderedTasks.length > 1 ? "ות" : "ה"}
             </b>
           </div>
         )}
@@ -499,16 +501,16 @@ export const TasksList: React.FC = () => {
           ))
         ) : (
           <NoTasks>
-            <span>You don't have any tasks yet</span>
+            <span>{t("home.tasks.noTasksYet")}</span>
             <br />
-            Click on the <span>+</span> button to add one
+            {t("home.tasks.clickToAdd")}
           </NoTasks>
         )}
         {search && orderedTasks.length === 0 && user.tasks.length > 0 ? (
           <TaskNotFound>
-            <b>No tasks found</b>
+            <b>לא נמצאו משימות</b>
             <br />
-            Try searching with different keywords.
+            נסה לחפש עם מילות מפתח אחרות.
             <div style={{ marginTop: "14px" }}>
               <TaskIcon scale={0.8} />
             </div>
@@ -522,8 +524,8 @@ export const TasksList: React.FC = () => {
       </TasksContainer>
       <Dialog open={deleteDialogOpen} onClose={cancelDeleteTask}>
         <CustomDialogTitle
-          title="Delete Task"
-          subTitle="Are you sure you want to delete this task?"
+          title="מחק משימה"
+          subTitle="האם אתה בטוח שברצונך למחוק את המשימה הזו?"
           onClose={cancelDeleteTask}
           icon={<Delete />}
         />
@@ -539,17 +541,17 @@ export const TasksList: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <DialogBtn onClick={cancelDeleteTask} color="primary">
-            Cancel
+            {t("common.cancel")}
           </DialogBtn>
           <DialogBtn onClick={confirmDeleteTask} color="error">
-            <DeleteRounded /> &nbsp; Confirm Delete
+            <DeleteRounded /> &nbsp; אשר מחיקה
           </DialogBtn>
         </DialogActions>
       </Dialog>
       <Dialog open={deleteSelectedOpen}>
         <CustomDialogTitle
-          title="Delete selected tasks"
-          subTitle="Confirm to delete selected tasks"
+          title="מחק משימות נבחרות"
+          subTitle="אשר כדי למחוק את המשימות הנבחרות"
           icon={<DeleteRounded />}
         />
         <DialogContent translate="no">
@@ -561,7 +563,7 @@ export const TasksList: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <DialogBtn onClick={() => setDeleteSelectedOpen(false)} color="primary">
-            Cancel
+            {t("common.cancel")}
           </DialogBtn>
           <DialogBtn
             onClick={() => {
@@ -579,7 +581,7 @@ export const TasksList: React.FC = () => {
             }}
             color="error"
           >
-            Delete
+            {t("common.delete")}
           </DialogBtn>
         </DialogActions>
       </Dialog>
